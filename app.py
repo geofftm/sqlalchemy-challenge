@@ -118,15 +118,17 @@ def start(start_date):
 def start_end(start_date, end_date):
     session = Session(engine)
 
-    results = session.query(func.min(Measurement.tobs), 
+    results = session.query(Measurement.date, func.min(Measurement.tobs), 
               func.max(Measurement.tobs),
-              func.avg(Measurement.tobs)).filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
+              func.avg(Measurement.tobs)).filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).\
+              group_by(Measurement.date).all()
     
     session.close()
 
     all_start_end = []
-    for min_tobs, max_tobs, avg_tobs in results:
+    for date, min_tobs, max_tobs, avg_tobs in results:
         se_mma_tobs_dict = {}
+        se_mma_tobs_dict["date"] = date
         se_mma_tobs_dict["min tobs"] = min_tobs
         se_mma_tobs_dict["max tobs"] = max_tobs
         se_mma_tobs_dict["avg tobs"] = avg_tobs
