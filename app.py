@@ -1,30 +1,47 @@
-from flask import Flask, jsonify
+import numpy 
+import sqlalchemy
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine, func
 
-# 2. Create an app, being sure to pass __name__
+from flask import Flask
+
+# #################################################
+# # Database Setup
+# #################################################
+engine = create_engine("sqlite:///hawaii.sqlite")
+
+# reflect an existing database into a new model
+Base = automap_base()
+# reflect the tables
+Base.prepare(engine, reflect=True)
+
+# Save reference to the table
+Measurement = Base.classes.measurement
+Station = Base.classes.station
+
+#################################################
+# Flask Setup
+#################################################
 app = Flask(__name__)
 
+#################################################
+# Flask Routes
+#################################################
 
-# 3. Define what to do when a user hits the index route
-#route is where you tell your content to go and execute
 @app.route("/")
 def home():
-    return ("Here are the available routes: "
-    "/api/v1.0/precipitation"
-    "api/v1.0/stations"
-    "/api/v1.0/tobs")
+    return (f"Here are the available routes: <br/>"
+    f"/api/v1.0/precipitation<br/>"
+    f"api/v1.0/stations<br/>"
+    f"/api/v1.0/tobs<br/>"
+    f"/api/v1.0/[start_date formatted as yyyy-mm-dd]<br/>"
+    f"/api/v1.0/[start_date formatted as yyyy-mm-dd]/[end_date formatted as 'yyyy-mm-dd'<br/>")
 
 
-# 4. Define what to do when a user hits the /about route
-@app.route("/about")
-def about():
-    print("Server received request for 'About' page...")
-    return "Welcome to my 'About' page!"
+# 4. Define what to do when a user hits the /precipitation route
+# @app.route("/api/v1.0/precipitation")
+# def prcp():
+#     session = Session(engine)
 
-@app.route("/ding")
-def ding():
-    print("Server received request for 'About' page...")
-    #return "Welcome to my 'About' page!"
-    
-
-if __name__ == "__main__":
-    app.run(debug=True)
+#     return session.query(Station.name)
