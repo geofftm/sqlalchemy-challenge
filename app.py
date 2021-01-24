@@ -35,8 +35,8 @@ def home():
     f"/api/v1.0/precipitation<br/>"
     f"api/v1.0/stations<br/>"
     f"/api/v1.0/tobs<br/>"
-    f"/api/v1.0/[start_date formatted as yyyy-mm-dd]<br/>"
-    f"/api/v1.0/[start_date formatted as yyyy-mm-dd]/[end_date formatted as 'yyyy-mm-dd']<br/>")
+    f"/api/v1.0/start_date (formatted as yyyy-mm-dd)<br/>"
+    f"/api/v1.0/start_date/end_date (formatted as yyyy-mm-dd]/yyyy-mm-dd')<br/>")
 
 
 # 4. Define what to do when a user hits the /precipitation route
