@@ -40,8 +40,21 @@ def home():
 
 
 # 4. Define what to do when a user hits the /precipitation route
-# @app.route("/api/v1.0/precipitation")
-# def prcp():
-#     session = Session(engine)
+@app.route("/api/v1.0/precipitation")
+def prcp():
+    session = Session(engine)
 
-#     return session.query(Station.name)
+    results = session.query(Measurement.date, Measurement.prcp).\
+                filter(Measurement.date >= '2016-08-23').filter(Measurement.date <= '2017-08-23').\
+                filter(Measurement.station == 'USC00519281').all()
+    
+    session.close()
+
+    for name, age, sex in results:
+        passenger_dict = {}
+        passenger_dict["name"] = name
+        passenger_dict["age"] = age
+        passenger_dict["sex"] = sex
+        all_passengers.append(passenger_dict)
+
+    return jsonify(all_passengers)
