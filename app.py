@@ -36,7 +36,7 @@ def home():
     f"api/v1.0/stations<br/>"
     f"/api/v1.0/tobs<br/>"
     f"/api/v1.0/[start_date formatted as yyyy-mm-dd]<br/>"
-    f"/api/v1.0/[start_date formatted as yyyy-mm-dd]/[end_date formatted as 'yyyy-mm-dd'<br/>")
+    f"/api/v1.0/[start_date formatted as yyyy-mm-dd]/[end_date formatted as 'yyyy-mm-dd']<br/>")
 
 
 # 4. Define what to do when a user hits the /precipitation route
@@ -92,7 +92,7 @@ def tobs():
    
     return jsonify(all_tobs)
 
-@app.route("/api/v1.0/start_date")
+@app.route("/api/v1.0/<start_date>")
 def start(start_date):
     session = Session(engine)
 
@@ -112,6 +112,28 @@ def start(start_date):
         all_start_dates.append(mma_tobs_dict)
    
     return jsonify(all_start_dates)
+
+
+@app.route("/api/v1.0/<start_date>/<end_date>")
+def start_end(start_date, end_date):
+    session = Session(engine)
+
+    results = session.query(func.min(Measurement.tobs), 
+              func.max(Measurement.tobs),
+              func.avg(Measurement.tobs)).filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
+    
+    session.close()
+
+    all_start_end = []
+    for min_tobs, max_tobs, avg_tobs in results:
+        se_mma_tobs_dict = {}
+        se_mma_tobs_dict["min tobs"] = min_tobs
+        se_mma_tobs_dict["max tobs"] = max_tobs
+        se_mma_tobs_dict["avg tobs"] = avg_tobs
+
+        all_start_end.append(se_mma_tobs_dict)
+   
+    return jsonify(all_start_end)
 
 
 if __name__ == '__main__':
